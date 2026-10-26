@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TaskResource;
 use Illuminate\Http\Request;
 use App\Models\Task;
 
@@ -13,7 +14,7 @@ class TaskController extends Controller
 
         return response()->json([
             'message' => 'Daftar tugas berhasil diambil',
-            'data' => $tasks,
+            'data' => TaskResource::collection($tasks),
         ],200);
     }
 
@@ -28,11 +29,11 @@ class TaskController extends Controller
 
         return response()->json([
             'message' => 'Tugas berhasil ditambahkan',
-            'data' => $task,
+            'data' => new TaskResource($task),
         ], 201);
     }
 
-    public function show(string $id) {
+    public function show($id) {
         $task = Task::find($id);
 
         if (!$task) {
@@ -43,11 +44,11 @@ class TaskController extends Controller
 
         return response()->json([
             'message' => 'Detail tugas berhasil diambil',
-            'data' => $task,
+            'data' => new TaskResource($task),
         ], 200);
     }
 
-    public function update(Request $request, string $id) {
+    public function update(Request $request, $id) {
         $task = Task::find($id);
 
         if (!$task) {
@@ -58,19 +59,19 @@ class TaskController extends Controller
 
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|nullable|string',
-            'is_completed' => 'sometimes|boolean',
+            'description' => 'nullable|string',
+            'is_completed' => 'boolean',
         ]);
 
         $task->update($validated);
 
         return response()->json([
             'message' => 'Tugas berhasil diperbarui',
-            'data' => $task->fresh(),
+            'data' => new TaskResource($task),
         ], 200);
     }
 
-    public function destroy(string $id) {
+    public function destroy($id) {
         $task = Task::find($id);
 
         if (!$task) {
