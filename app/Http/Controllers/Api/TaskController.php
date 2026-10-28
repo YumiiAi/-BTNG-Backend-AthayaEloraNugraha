@@ -13,22 +13,23 @@ class TaskController extends Controller
         $tasks = Task::all();
 
         return response()->json([
-            'message' => 'Daftar tugas berhasil diambil',
+            'message' => 'Daftar Element berhasil diambil',
             'data' => TaskResource::collection($tasks),
         ],200);
     }
 
     public function store(Request $request) {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'is_completed' => 'sometimes|boolean',
+            'element' => 'required|string|max:255',
+            'color' => 'required|string|max:255',
+            'description' => 'required|string',
+            'rarity' => 'required|string|max:255',
         ]);
 
         $task = Task::create($validated);
 
         return response()->json([
-            'message' => 'Tugas berhasil ditambahkan',
+            'message' => 'Element berhasil ditambahkan',
             'data' => new TaskResource($task),
         ], 201);
     }
@@ -38,12 +39,12 @@ class TaskController extends Controller
 
         if (!$task) {
             return response()->json([
-                'message' => 'Tugas tidak ditemukan',
+                'message' => 'Element tidak ditemukan',
             ], 404);
         }
 
         return response()->json([
-            'message' => 'Detail tugas berhasil diambil',
+            'message' => 'Detail Element berhasil diambil',
             'data' => new TaskResource($task),
         ], 200);
     }
@@ -53,20 +54,21 @@ class TaskController extends Controller
 
         if (!$task) {
             return response()->json([
-                'message' => 'Tugas tidak ditemukan',
+                'message' => 'Element tidak ditemukan',
             ], 404);
         }
 
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'is_completed' => 'boolean',
+            'element' => 'required|string|max:255',
+            'color' => 'required|string|max:255',
+            'description' => 'required|string',
+            'rarity' => 'required|string|max:255',
         ]);
 
         $task->update($validated);
 
         return response()->json([
-            'message' => 'Tugas berhasil diperbarui',
+            'message' => 'Element berhasil diperbarui',
             'data' => new TaskResource($task),
         ], 200);
     }
@@ -76,14 +78,14 @@ class TaskController extends Controller
 
         if (!$task) {
             return response()->json([
-                'message' => 'Tugas tidak ditemukan',
+                'message' => 'Element tidak ditemukan',
             ], 404);
         }
 
         $task->delete();
 
         return response()->json([
-            'message' => 'Tugas berhasil dihapus',
+            'message' => 'Element berhasil dihapus',
         ], 200);
     }
 }
